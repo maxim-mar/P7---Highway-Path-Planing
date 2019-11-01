@@ -191,7 +191,7 @@ int main() {
     //Reference velocity.
     double ref_vel = 0.0; // mph
     double speed_diff = .224;
-//    const double max_accel = 49.5;
+    const double max_vel = 49.5;
 
    h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
                &map_waypoints_dx,&map_waypoints_dy]
@@ -240,6 +240,39 @@ int main() {
            * TODO: define a path made up of (x,y) points that the car will visit
            *   sequentially every .02 seconds
            */
+            
+            
+            
+            //BEHAVIOUR
+            /***
+             The behavioral planning component determines what behavior the vehicle should exhibit at any point in time.
+             For example stopping at a traffic light or intersection, changing lanes, accelerating, or making a left turn onto a new street are all maneuvers that may be issued by this component.***/
+            if(car_ahead) {
+                if(!car_left && lane > 0) {
+                    lane--;
+                    
+                }
+                else if(!car_right && lane !=2) {
+                    lane++;
+                    
+                }
+                else if(!car_left && lane !=2) {
+                    lane++;
+                    
+                }
+                else {
+                    ref_vel -= speed_diff;
+                }
+                
+            }
+            else if(ref_vel < max_vel){
+                ref_vel += speed_diff;
+                
+            }
+            
+            //In actual case, behaviour planner decides the trajectory based on the cost functions.
+            //In this highway example, we may no need to worry about cost functions as we are considering only lane change or reduce speed based on the obstacles.
+            
             
             //TRAJECTORY
                         /***
@@ -312,9 +345,6 @@ int main() {
             // Create the spline.
             tk::spline s;
             s.set_points(ptsx, ptsy);
-
-            vector<double> next_x_vals;
-            vector<double> next_y_vals;
             
             //For the smooth transition, we are adding previous path points
             for ( int i = 0; i < prev_size; i++ ) {
