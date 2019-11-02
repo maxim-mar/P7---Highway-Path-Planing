@@ -270,6 +270,7 @@ int main() {
             bool car_left= false;
             bool car_right = false;
             bool car_ahead = false;
+            bool car_close = false;
                         
             for(int i=0; i < sensor_fusion.size(); i++) {
                 float d = sensor_fusion[i][6];
@@ -315,7 +316,10 @@ int main() {
                     car_right |= (car_s+30) > check_car_s  && (car_s-30) < check_car_s;
                     
                 }
-                
+                else if(check_car_lane == lane) {
+                    //A vehicle is on the same line and check the car is in front of the ego car
+                    car_close |= check_car_s > car_s && (check_car_s - car_s) < 10;
+                }
             }
             
             //BEHAVIOUR
@@ -334,6 +338,9 @@ int main() {
                 else if(!car_left && lane !=2) {
                     lane++;
                     
+                }
+                else if (car_close){ //emergency break
+                    ref_vel -= 3 * speed_diff;
                 }
                 else {
                     ref_vel -= speed_diff;
