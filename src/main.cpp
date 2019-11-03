@@ -307,13 +307,13 @@ int main() {
                     
                 }
                 else if((check_car_lane - lane) == -1) {
-                    //A vehicle is on the left lane and check that is in 30 meter range
-                    car_left |= (car_s+30) > check_car_s  && (car_s-30) < check_car_s;
+                    //A vehicle is on the left lane and check that is in 20 meter range
+                    car_left |= (car_s+20) > check_car_s  && (car_s-20) < check_car_s;
                     
                 }
                 else if((check_car_lane - lane) == 1) {
-                    //A vehicle is on the right lane and check that is in 30 meter range
-                    car_right |= (car_s+30) > check_car_s  && (car_s-30) < check_car_s;
+                    //A vehicle is on the right lane and check that is in 20 meter range
+                    car_right |= (car_s+20) > check_car_s  && (car_s-20) < check_car_s;
                     
                 }
                 else if(check_car_lane == lane) {
@@ -326,7 +326,7 @@ int main() {
             /***
              The behavioral planning component determines what behavior the vehicle should exhibit at any point in time.
              For example stopping at a traffic light or intersection, changing lanes, accelerating, or making a left turn onto a new street are all maneuvers that may be issued by this component.***/
-            if(car_ahead) {
+           if(car_ahead) {
                 if(!car_left && lane > 0) {
                     lane--;
                     
@@ -335,12 +335,9 @@ int main() {
                     lane++;
                     
                 }
-                else if(!car_left && lane !=2) {
-                    lane++;
-                    
-                }
+  
                 else if (car_close){ //emergency break
-                    ref_vel -= 3 * speed_diff;
+                    ref_vel -= 10 * speed_diff;
                 }
                 else {
                     ref_vel -= speed_diff;
@@ -351,6 +348,7 @@ int main() {
                 ref_vel += speed_diff;
                 
             }
+            
             
             //In actual case, behaviour planner decides the trajectory based on the cost functions.
             //In this highway example, we may no need to worry about cost functions as we are considering only lane change or reduce speed based on the obstacles.
